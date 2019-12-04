@@ -134,7 +134,7 @@ def update_df_main(page_link):
 
 try:
     DF_MAIN = unpickle_object('df_main.pickle')
-    EXISTING_LINKS = list(DF_MAIN.page_links)
+    EXISTING_LINKS = list(DF_MAIN.page_link)
 except FileNotFoundError:
     print('file not found')
     DF_MAIN = pd.DataFrame()
