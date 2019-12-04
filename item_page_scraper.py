@@ -139,13 +139,14 @@ if __name__ == "__main__":
     options.add_argument('--headless')
     driver = webdriver.Chrome(options=options, executable_path='./chromedriver')
     try:
-        df_main = unpickle_object('df_main.pickle')
-        existing_links = list(df_main.page_links)
+        global df_main = unpickle_object('df_main.pickle')
+        global existing_links = list(df_main.page_links)
     except FileNotFoundError:
         print('file not found')
-        df_main = pd.DataFrame()
+        global df_main = pd.DataFrame()
+        global existing_links = []
     item_links = unpickle_object('item_links.pickle')
-    global existing_links 
+
     for item_link in item_links:
         if item_link in existing_links:
             pass
