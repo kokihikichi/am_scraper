@@ -6,6 +6,23 @@ from selenium.common.exceptions import NoSuchElementException
 import pickle
 from time import sleep
 
+try:
+    DF_MAIN = unpickle_object('df_main.pickle')
+    EXISTING_LINKS = list(DF_MAIN.page_links)
+except FileNotFoundError:
+    print('file not found')
+    DF_MAIN = pd.DataFrame()
+    EXISTING_LINKS = []
+
+pd.set_option('display.max_colwidth', -1)
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
+
+OPTIONS = Options()
+OPTIONS.add_argument('--headless')
+DRIVER = webdriver.Chrome(options=OPTIONS, executable_path='./chromedriver')
+
 def pickle_object(file_name, obj):
     with open(file_name, 'wb') as f:
         pickle.dump(obj, f)
@@ -15,10 +32,10 @@ def unpickle_object(file_name):
         return pickle.load(f)
 
 def get_item_genre():
-    global driver
+    global DRIVER
     genre_list = []
     try:
-        genre_elem = driver.find_element_by_id("showing-breadcrumbs_div")
+        genre_elem = DRIVER.find_element_by_id("showing-breadcrumbs_div")
         genre_content_elems = genre_elem.find_element_by_tag_name("ul").find_elements_by_tag_name("li")
         for genre_content_elem in genre_content_elems:
             genre_list.append(genre_content_elem.text)
@@ -27,10 +44,10 @@ def get_item_genre():
     return genre_list
 
 def get_item_info():
-    global driver
+    global DRIVER
     info_list = []
     try:
-        detail_elem = driver.find_element_by_id("detail_bullets_id")
+        detail_elem = DRIVER.find_element_by_id("detail_bullets_id")
         detail_content_elems = detail_elem.find_element_by_class_name("content").find_elements_by_tag_name("li")
         for detail_content_elem in detail_content_elems:
             info_list.append(detail_content_elem.text)
@@ -39,9 +56,9 @@ def get_item_info():
     return info_list
 
 def get_item_brand():
-    global driver
+    global DRIVER
     try:
-        brand_elem = driver.find_element_by_id("titleBlock")
+        brand_elem = DRIVER.find_element_by_id("titleBlock")
         brand_text = brand_elem.find_element_by_id("bylineInfo_feature_div").text
         item_text = brand_elem.find_element_by_id("title_feature_div").text
         brand_link = brand_elem.find_element_by_tag_name("a").get_attribute("href")
@@ -50,22 +67,22 @@ def get_item_brand():
     return [brand_text, item_text, brand_link]
 
 def get_item_review():
-    global driver
+    global DRIVER
     try:
-        review_rate = driver.find_element_by_id("acrPopover").get_attribute("title")
-        review_number = driver.find_element_by_id("acrCustomerReviewText").text
+        review_rate = DRIVER.find_element_by_id("acrPopover").get_attribute("title")
+        review_number = DRIVER.find_element_by_id("acrCustomerReviewText").text
     except NoSuchElementException:
         return 'Odd item review'
     return [review_rate, review_number]
 
 def get_item_price():
-    price_info = driver.find_element_by_id("price").text
+    price_info = DRIVER.find_element_by_id("price").text
     return price_info
 
 def get_item_text():
     item_text_list = []
     try:        
-        item_text = driver.find_element_by_id("feature-bullets")
+        item_text = DRIVER.find_element_by_id("feature-bullets")
         item_text_elems = item_text.find_element_by_tag_name("ul").find_elements_by_tag_name("li")
         for item_text_elem in item_text_elems:
             item_text_list.append(item_text_elem.text)
@@ -75,9 +92,9 @@ def get_item_text():
 
 
 def get_images(div_id):
-    global driver
+    global DRIVER
     img_list = []
-    img_elem_box = driver.find_element_by_id(div_id)
+    img_elem_box = DRIVER.find_element_by_id(div_id)
     img_elems = img_elem_box.find_elements_by_tag_name("li")
     for img_elem in img_elems:
         try:
@@ -93,14 +110,14 @@ def get_images(div_id):
 
 
 def update_df_main(page_link):
-    global df_main
-    global driver
+    global DF_MAIN
+    global DRIVER
     print(page_link)
     # create an item page record
     df_tmp = pd.DataFrame([page_link], columns=['page_link'])
 
     # get images
-    driver.get(item_link)
+    DRIVER.get(item_link)
     sleep(3)
     alt_image_list = str(get_images("altImages"))
     feature_image_list = str(get_images("twister_feature_div"))
@@ -126,29 +143,16 @@ def update_df_main(page_link):
     df_tmp['item_text'] = item_text
     df_tmp['item_genre'] = item_genre
 
-    df_main = df_main.append(df_tmp)
-    pickle_object('df_main.pickle', df_main)
+    DF_MAIN = DF_MAIN.append(df_tmp)
+    pickle_object('df_main.pickle', DF_MAIN)
 
 if __name__ == "__main__":
-    pd.set_option('display.max_colwidth', -1)
-    pd.set_option('display.max_rows', 500)
-    pd.set_option('display.max_columns', 500)
-    pd.set_option('display.width', 1000)
-
-    options = Options()
-    options.add_argument('--headless')
-    driver = webdriver.Chrome(options=options, executable_path='./chromedriver')
-    try:
-        global df_main = unpickle_object('df_main.pickle')
-        global existing_links = list(df_main.page_links)
-    except FileNotFoundError:
-        print('file not found')
-        global df_main = pd.DataFrame()
-        global existing_links = []
+    global EXISTING_LINKS
+    
     item_links = unpickle_object('item_links.pickle')
 
     for item_link in item_links:
-        if item_link in existing_links:
+        if item_link in EXISTING_LINKS:
             pass
         else:
             update_df_main(item_link)
