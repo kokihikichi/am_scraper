@@ -26,8 +26,7 @@ def collect_item_pages(driver, current_url):
             print('file not found')
         print('current_url:{}'.format(current_url))
         driver.get(current_url)
-        sleep(2)
-        
+        sleep(2)        
         try:
             res = driver.find_element_by_id("mainResults")
             item_elems = res.find_elements_by_tag_name("li")
@@ -36,7 +35,7 @@ def collect_item_pages(driver, current_url):
                 if 'https://www.amazon.co.jp/' in item_link:
                     item_links.append(item_link)
             driver.find_element_by_id("pagnNextString").click()
-            print('success')
+            print('success 1')
         except NoSuchElementException:
             res = driver.find_element_by_xpath("//div[@class='s-result-list s-search-results sg-row']")
             item_elems = res.find_elements_by_tag_name("h2")
@@ -44,13 +43,12 @@ def collect_item_pages(driver, current_url):
                 item_link = item_elem.find_element_by_xpath("a[@class='a-link-normal a-text-normal']").get_attribute("href")
                 item_links.append(item_link)
             driver.find_element_by_class_name("a-last").click()
-            print('success')
-            
-        pickle_object('item_links.pickle', item_links)
-        pickle_object('current_url.pickle', current_url)
+            print('success 2')
         tmp_url = current_url
         current_url = driver.current_url
         prev_url = tmp_url
+        pickle_object('item_links.pickle', item_links)
+        pickle_object('current_url.pickle', current_url)
 
 if __name__ == "__main__":
     pd.set_option('display.max_rows', 500)
@@ -67,7 +65,3 @@ if __name__ == "__main__":
     else:
         current_url = unpickle_object('current_url.pickle')
     collect_item_pages(driver, current_url)
-
-
-
-        
