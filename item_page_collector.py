@@ -15,23 +15,6 @@ def unpickle_object(file_name):
     with open(file_name, 'rb') as f:
         return pickle.load(f)
 
-if __name__ == "__main__":
-    pd.set_option('display.max_rows', 500)
-    pd.set_option('display.max_columns', 500)
-    pd.set_option('display.width', 1000)
-    options = Options()
-    options.add_argument('--headless')
-    driver = webdriver.Chrome(options=options, executable_path='./chromedriver')
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--url')
-    args = parser.parse_args()
-    if args.url:
-        current_url = args.url
-    else:
-        current_url = unpickle_object('current_url.pickle')
-    collect_item_pages(driver, current_url)
-
-
 def collect_item_pages(driver, current_url):
     prev_url = ''
     item_links = []
@@ -68,4 +51,23 @@ def collect_item_pages(driver, current_url):
         tmp_url = current_url
         current_url = driver.current_url
         prev_url = tmp_url
+
+if __name__ == "__main__":
+    pd.set_option('display.max_rows', 500)
+    pd.set_option('display.max_columns', 500)
+    pd.set_option('display.width', 1000)
+    options = Options()
+    options.add_argument('--headless')
+    driver = webdriver.Chrome(options=options, executable_path='./chromedriver')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--url')
+    args = parser.parse_args()
+    if args.url:
+        current_url = args.url
+    else:
+        current_url = unpickle_object('current_url.pickle')
+    collect_item_pages(driver, current_url)
+
+
+
         
