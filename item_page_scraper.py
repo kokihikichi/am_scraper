@@ -6,23 +6,6 @@ from selenium.common.exceptions import NoSuchElementException
 import pickle
 from time import sleep
 
-try:
-    DF_MAIN = unpickle_object('df_main.pickle')
-    EXISTING_LINKS = list(DF_MAIN.page_links)
-except FileNotFoundError:
-    print('file not found')
-    DF_MAIN = pd.DataFrame()
-    EXISTING_LINKS = []
-
-pd.set_option('display.max_colwidth', -1)
-pd.set_option('display.max_rows', 500)
-pd.set_option('display.max_columns', 500)
-pd.set_option('display.width', 1000)
-
-OPTIONS = Options()
-OPTIONS.add_argument('--headless')
-DRIVER = webdriver.Chrome(options=OPTIONS, executable_path='./chromedriver')
-
 def pickle_object(file_name, obj):
     with open(file_name, 'wb') as f:
         pickle.dump(obj, f)
@@ -145,6 +128,23 @@ def update_df_main(page_link):
 
     DF_MAIN = DF_MAIN.append(df_tmp)
     pickle_object('df_main.pickle', DF_MAIN)
+
+try:
+    DF_MAIN = unpickle_object('df_main.pickle')
+    EXISTING_LINKS = list(DF_MAIN.page_links)
+except FileNotFoundError:
+    print('file not found')
+    DF_MAIN = pd.DataFrame()
+    EXISTING_LINKS = []
+
+pd.set_option('display.max_colwidth', -1)
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
+
+OPTIONS = Options()
+OPTIONS.add_argument('--headless')
+DRIVER = webdriver.Chrome(options=OPTIONS, executable_path='./chromedriver')
 
 if __name__ == "__main__":
     global EXISTING_LINKS
