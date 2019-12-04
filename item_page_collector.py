@@ -26,6 +26,8 @@ if __name__ == "__main__":
     parser.add_argument('--url')
     args = parser.parse_args()
     current_url = args.url
+    collect_item_pages(driver, current_url)
+
 
 def collect_item_pages(driver, current_url):
     prev_url = ''
