@@ -59,7 +59,10 @@ def get_item_review():
     return [review_rate, review_number]
 
 def get_item_price():
-    price_info = DRIVER.find_element_by_id("price").text
+    try:
+        price_info = DRIVER.find_element_by_id("price").text
+    except NoSuchElementException:
+        price_info = 'Odd price info'
     return price_info
 
 def get_item_text():
