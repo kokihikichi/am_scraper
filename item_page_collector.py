@@ -25,7 +25,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--url')
     args = parser.parse_args()
-    current_url = args.url
+    if args.url:
+        current_url = args.url
+    else:
+        current_url = unpickle_object('current_url.pickle')
     collect_item_pages(driver, current_url)
 
 
