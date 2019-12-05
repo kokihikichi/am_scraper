@@ -80,20 +80,18 @@ def get_item_text():
 def get_images(div_id):
     global DRIVER
     img_list = []
-    img_elem_box = DRIVER.find_element_by_id(div_id)
-    img_elems = img_elem_box.find_elements_by_tag_name("li")
-    for img_elem in img_elems:
-        try:
+    try:
+        img_elem_box = DRIVER.find_element_by_id(div_id)
+        img_elems = img_elem_box.find_elements_by_tag_name("li")
+        for img_elem in img_elems:
             img_link = img_elem.find_element_by_tag_name("img").get_attribute("src")
             if 'https://images-na.ssl-images-amazon.com/images/G/09/HomeCustomProduct/360_icon' in img_link:
                 pass
             else:
                 img_list.append(img_elem.find_element_by_tag_name("img").get_attribute("src"))
-        except NoSuchElementException:
-            pass
+    except NoSuchElementException:
+        pass
     return img_list
-
-
 
 def update_df_main(page_link):
     global DF_MAIN
