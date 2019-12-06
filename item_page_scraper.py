@@ -115,11 +115,21 @@ def get_images(div_id):
         img_elems = img_elem_box.find_elements_by_tag_name("li")
         for img_elem in img_elems:
             try:
+<<<<<<< HEAD
                 img_link = img_elem.find_element_by_tag_name("img").get_attribute("src")
                 if 'https://images-na.ssl-images-amazon.com/images/G/09/HomeCustomProduct/360_icon' in img_link:
                     pass
                 else:
                     img_list.append(img_elem.find_element_by_tag_name("img").get_attribute("src"))
+=======
+                img_link = img_elem.find_element_by_tag_name(
+                    "img").get_attribute("src")
+                if 'https://images-na.ssl-images-amazon.com/images/G/09/HomeCustomProduct/360_icon' in img_link:
+                    pass
+                else:
+                    img_list.append(img_elem.find_element_by_tag_name(
+                        "img").get_attribute("src"))
+>>>>>>> minor modifications
             except NoSuchElementException:
                 pass
     except NoSuchElementException:
