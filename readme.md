@@ -50,6 +50,7 @@ python item_page_collector.py --url
 # crate vm instances
 
 ```
-gcloud beta compute --project=window-shopping-app instances create am-scraper-12 --zone=us-central1-a --machine-type=f1-micro --subnet=default --network-tier=PREMIUM --maintenance-policy=MIGRATE --service-account=9654041822-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform --tags=http-server,https-server --image=centos-7-v20191121 --image-project=centos-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=am-scraper-9 --reservation-affinity=any
+gcloud compute --project "window-shopping-app" disks create "am-scraper-11" --size "10" --zone "us-central1-a" --source-snapshot "am-scraper-snapshot" --type "pd-standard"
 
+gcloud beta compute --project=window-shopping-app instances create am-scraper-11 --zone=us-central1-a --machine-type=f1-micro --subnet=default --network-tier=PREMIUM --maintenance-policy=MIGRATE --service-account=9654041822-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform --tags=http-server,https-server --disk=name=am-scraper-11,device-name=am-scraper-11,mode=rw,boot=yes,auto-delete=yes --reservation-affinity=any
 ```
