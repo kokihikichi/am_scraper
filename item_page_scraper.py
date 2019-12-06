@@ -6,57 +6,82 @@ from selenium.common.exceptions import NoSuchElementException
 import pickle
 from time import sleep
 
+
 def pickle_object(file_name, obj):
     with open(file_name, 'wb') as f:
         pickle.dump(obj, f)
 
+
 def unpickle_object(file_name):
     with open(file_name, 'rb') as f:
         return pickle.load(f)
+
 
 def get_item_genre():
     global DRIVER
     genre_list = []
     try:
         genre_elem = DRIVER.find_element_by_id("showing-breadcrumbs_div")
-        genre_content_elems = genre_elem.find_element_by_tag_name("ul").find_elements_by_tag_name("li")
+        genre_content_elems = genre_elem.find_element_by_tag_name(
+            "ul").find_elements_by_tag_name("li")
         for genre_content_elem in genre_content_elems:
             genre_list.append(genre_content_elem.text)
     except NoSuchElementException:
         genre_list.append('Odd item genre page')
     return genre_list
 
+
+def get_item_info_2():
+    global DRIVER
+    info_list = []
+    try:
+        detail_elem = DRIVER.find_element_by_id("prodDetails")
+        detail_content_elems = detail_elem.find_elements_by_tag_name('tr')
+        for detail_content_elem in detail_content_elems:
+            info_list.append(detail_content_elem.text.split())
+    except NoSuchElementException:
+        info_list.append('Odd item info page')
+    return info_list
+
+
 def get_item_info():
     global DRIVER
     info_list = []
     try:
         detail_elem = DRIVER.find_element_by_id("detail_bullets_id")
-        detail_content_elems = detail_elem.find_element_by_class_name("content").find_elements_by_tag_name("li")
+        detail_content_elems = detail_elem.find_element_by_class_name(
+            "content").find_elements_by_tag_name("li")
         for detail_content_elem in detail_content_elems:
             info_list.append(detail_content_elem.text)
     except NoSuchElementException:
         info_list.append('Odd item info page')
     return info_list
 
+
 def get_item_brand():
     global DRIVER
     try:
         brand_elem = DRIVER.find_element_by_id("titleBlock")
-        brand_text = brand_elem.find_element_by_id("bylineInfo_feature_div").text
+        brand_text = brand_elem.find_element_by_id(
+            "bylineInfo_feature_div").text
         item_text = brand_elem.find_element_by_id("title_feature_div").text
-        brand_link = brand_elem.find_element_by_tag_name("a").get_attribute("href")
+        brand_link = brand_elem.find_element_by_tag_name(
+            "a").get_attribute("href")
     except NoSuchElementException:
         return 'Odd item item brand'
     return [brand_text, item_text, brand_link]
 
+
 def get_item_review():
     global DRIVER
     try:
-        review_rate = DRIVER.find_element_by_id("acrPopover").get_attribute("title")
+        review_rate = DRIVER.find_element_by_id(
+            "acrPopover").get_attribute("title")
         review_number = DRIVER.find_element_by_id("acrCustomerReviewText").text
     except NoSuchElementException:
         return 'Odd item review'
     return [review_rate, review_number]
+
 
 def get_item_price():
     try:
@@ -65,11 +90,13 @@ def get_item_price():
         price_info = 'Odd price info'
     return price_info
 
+
 def get_item_text():
     item_text_list = []
-    try:        
+    try:
         item_text = DRIVER.find_element_by_id("feature-bullets")
-        item_text_elems = item_text.find_element_by_tag_name("ul").find_elements_by_tag_name("li")
+        item_text_elems = item_text.find_element_by_tag_name(
+            "ul").find_elements_by_tag_name("li")
         for item_text_elem in item_text_elems:
             item_text_list.append(item_text_elem.text)
     except NoSuchElementException:
@@ -84,14 +111,17 @@ def get_images(div_id):
         img_elem_box = DRIVER.find_element_by_id(div_id)
         img_elems = img_elem_box.find_elements_by_tag_name("li")
         for img_elem in img_elems:
-            img_link = img_elem.find_element_by_tag_name("img").get_attribute("src")
+            img_link = img_elem.find_element_by_tag_name(
+                "img").get_attribute("src")
             if 'https://images-na.ssl-images-amazon.com/images/G/09/HomeCustomProduct/360_icon' in img_link:
                 pass
             else:
-                img_list.append(img_elem.find_element_by_tag_name("img").get_attribute("src"))
+                img_list.append(img_elem.find_element_by_tag_name(
+                    "img").get_attribute("src"))
     except NoSuchElementException:
         pass
     return img_list
+
 
 def update_df_main(page_link):
     global DF_MAIN
@@ -107,6 +137,7 @@ def update_df_main(page_link):
     feature_image_list = str(get_images("twister_feature_div"))
     # get item info
     info_list = str(get_item_info())
+    info_list_2 = str(get_item_info_2())
     # get item brand
     item_brand = str(get_item_brand())
     # get item review
@@ -121,6 +152,7 @@ def update_df_main(page_link):
     df_tmp['alt_images'] = alt_image_list
     df_tmp['feature_images'] = feature_image_list
     df_tmp['item_info'] = info_list
+    df_tmp['item_info_2'] = info_list_2
     df_tmp['item_brand'] = item_brand
     df_tmp['item_review'] = item_review
     df_tmp['item_price'] = item_price
@@ -129,6 +161,7 @@ def update_df_main(page_link):
 
     DF_MAIN = DF_MAIN.append(df_tmp)
     pickle_object('df_main.pickle', DF_MAIN)
+
 
 try:
     DF_MAIN = unpickle_object('df_main.pickle')
@@ -149,7 +182,7 @@ DRIVER = webdriver.Chrome(options=OPTIONS, executable_path='./chromedriver')
 
 if __name__ == "__main__":
     global EXISTING_LINKS
-    
+
     item_links = unpickle_object('item_links.pickle')
 
     for item_link in item_links:
