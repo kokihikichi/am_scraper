@@ -130,6 +130,7 @@ def request_reject_check():
         DRIVER.find_element_by_id('altImages')
         return 0
     except NoSuchElementException:
+        print('Rejected?')
         return 1
 
 def update_df_main(page_link):
@@ -143,8 +144,14 @@ def update_df_main(page_link):
 
     # get images
     DRIVER.get(item_link)
-    sleep(3)
+    sleep(random.randint(2,5))
     STOP_SIG = request_reject_check()
+
+    # sleep until passing the reject check
+    while STOP_SIG == 1:
+        print(DRIVER.page_source)
+        sleep(60*40)
+        STOP_SIG = request_reject_check()
     alt_image_list = str(get_images("altImages"))
     feature_image_list = str(get_images("twister_feature_div"))
     # get item info
@@ -198,17 +205,8 @@ if __name__ == "__main__":
     global DRIVER
 
     item_links = unpickle_object('item_links.pickle')
-
-    while STOP_SIG == 0:
-        for item_link in item_links:
-            if item_link in EXISTING_LINKS:
-                pass
-            else:
-                update_df_main(item_link)
-    else:
-        print('Rejected')
-        page_source = DRIVER.page_source
-        file_name = datetime.datetime.now().isoformat()
-        os.system('gsutil cp df_main.pickle gs://am-scraped/bk/{file_name}.pickle'.format(file_name))
-        
-
+    for item_link in item_links:
+        if item_link in EXISTING_LINKS:
+            pass
+        else:
+            update_df_main(item_link)
