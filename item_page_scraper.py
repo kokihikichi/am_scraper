@@ -1,11 +1,12 @@
+from time import sleep
 import time
 from selenium import webdriver
-import pandas as pd
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 import pickle
-from time import sleep
-
+import os
+import datetime
+import pandas as pd
 
 def pickle_object(file_name, obj):
     with open(file_name, 'wb') as f:
@@ -123,10 +124,19 @@ def get_images(div_id):
         pass
     return img_list
 
+def request_reject_check():
+    global DRIVER
+    try:
+        DRIVER.find_element_by_id('altImages')
+        return 0
+    except NoSuchElementException:
+        return 1
 
 def update_df_main(page_link):
     global DF_MAIN
     global DRIVER
+    global STOP_SIG
+
     print(page_link)
     # create an item page record
     df_tmp = pd.DataFrame([page_link], columns=['page_link'])
@@ -134,6 +144,7 @@ def update_df_main(page_link):
     # get images
     DRIVER.get(item_link)
     sleep(3)
+    STOP_SIG = request_reject_check()
     alt_image_list = str(get_images("altImages"))
     feature_image_list = str(get_images("twister_feature_div"))
     # get item info
@@ -159,10 +170,9 @@ def update_df_main(page_link):
     df_tmp['item_price'] = item_price
     df_tmp['item_text'] = item_text
     df_tmp['item_genre'] = item_genre
-
     DF_MAIN = DF_MAIN.append(df_tmp)
     pickle_object('df_main.pickle', DF_MAIN)
-
+    
 
 try:
     DF_MAIN = unpickle_object('df_main.pickle')
@@ -177,17 +187,27 @@ pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
+STOP_SIG = 0
 OPTIONS = Options()
 OPTIONS.add_argument('--headless')
 DRIVER = webdriver.Chrome(options=OPTIONS, executable_path='./chromedriver')
 
 if __name__ == "__main__":
     global EXISTING_LINKS
+    global STOP_SIG
+    global DRIVER
 
     item_links = unpickle_object('item_links.pickle')
 
-    for item_link in item_links:
-        if item_link in EXISTING_LINKS:
-            pass
-        else:
-            update_df_main(item_link)
+    while STOP_SIG == 0:
+        for item_link in item_links:
+            if item_link in EXISTING_LINKS:
+                pass
+            else:
+                update_df_main(item_link)
+    else:
+        page_source = DRIVER.page_source
+        file_name = datetime.datetime.now().isoformat()
+        os.system('gsutil cp df_main.pickle gs://am-scraped/bk/{file_name}.pickle'.format(file_name))
+        
+
