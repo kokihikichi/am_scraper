@@ -135,8 +135,10 @@ def request_reject_check():
         td_elems = DRIVER.find_elements_by_tag_name('td')
         for td_elem in td_elems:
             if '有効なページではありません' in td_elem.text:
+                print('有効なページではありません')
                 res = 0
             if 'お客様のリクエストの処理中にエラーが発生しました。' in td_elem.text:
+                print('お客様のリクエストの処理中にエラーが発生しました。')
                 res = 0
     if res == 1:
         print('Rejected')        
