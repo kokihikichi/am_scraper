@@ -8,6 +8,7 @@ import os
 import datetime
 import pandas as pd
 import random
+import argparse
 
 def pickle_object(file_name, obj):
     with open(file_name, 'wb') as f:
@@ -219,8 +220,23 @@ if __name__ == "__main__":
     global DRIVER
 
     item_links = unpickle_object('item_links.pickle')
-    for item_link in item_links:
-        if item_link in EXISTING_LINKS:
-            pass
-        else:
-            update_df_main(item_link)
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--update_flg')
+    args = parser.parse_args()
+
+    # flg to fill empty information
+    if args.update_flg == 'alt_images':
+        EXISTING_LINKS = list(df[df[args.update_flg] != '[]'].page_link)
+        for item_link in item_links:
+            if item_link in EXISTING_LINKS:
+                pass
+            else:
+                update_df_main(item_link)
+    else:
+        for item_link in item_links:
+            if item_link in EXISTING_LINKS:
+                pass
+            else:
+                update_df_main(item_link)
+    
