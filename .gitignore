@@ -2,3 +2,4 @@ chromedriver
 item_links.pickle
 current_url.pickle
 .vscode/
+df_main.pickle
