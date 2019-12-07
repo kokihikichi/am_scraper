@@ -136,6 +136,8 @@ def request_reject_check():
         for td_elem in td_elems:
             if '有効なページではありません' in td_elem.text:
                 res = 0
+            if 'お客様のリクエストの処理中にエラーが発生しました。' in td_elem.text:
+                res = 0
     if res == 1:
         print('Rejected')        
     return res
