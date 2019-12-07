@@ -7,6 +7,7 @@ import pickle
 import os
 import datetime
 import pandas as pd
+import random
 
 def pickle_object(file_name, obj):
     with open(file_name, 'wb') as f:
@@ -152,6 +153,8 @@ def update_df_main(page_link):
         print(DRIVER.page_source)
         sleep(60*40)
         STOP_SIG = request_reject_check()
+        file_name = datetime.datetime.now().isoformat()
+        os.system('gsutil cp df_main.pickle gs://am-scraped/bk/{file_name}.pickle'.format(file_name=file_name))
     alt_image_list = str(get_images("altImages"))
     feature_image_list = str(get_images("twister_feature_div"))
     # get item info
