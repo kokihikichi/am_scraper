@@ -206,6 +206,7 @@ if __name__ == "__main__":
             else:
                 update_df_main(item_link)
     else:
+        print('Rejected')
         page_source = DRIVER.page_source
         file_name = datetime.datetime.now().isoformat()
         os.system('gsutil cp df_main.pickle gs://am-scraped/bk/{file_name}.pickle'.format(file_name))
