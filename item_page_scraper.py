@@ -127,12 +127,18 @@ def get_images(div_id):
 
 def request_reject_check():
     global DRIVER
+    res = 0
     try:
         DRIVER.find_element_by_id('altImages')
-        return 0
     except NoSuchElementException:
-        print('Rejected?')
-        return 1
+        res = 1
+        td_elems = DRIVER.find_elements_by_tag_name('td')
+        for td_elem in td_elems:
+            if '有効なページではありません' in td_elem.text:
+                res = 0
+    if res == 1:
+        print('Rejected')        
+    return res
 
 def update_df_main(page_link):
     global DF_MAIN
