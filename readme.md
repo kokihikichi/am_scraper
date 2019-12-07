@@ -54,3 +54,21 @@ gcloud compute --project "window-shopping-app" disks create "am-scraper-11" --si
 
 gcloud beta compute --project=window-shopping-app instances create am-scraper-11 --zone=us-central1-a --machine-type=f1-micro --subnet=default --network-tier=PREMIUM --maintenance-policy=MIGRATE --service-account=9654041822-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform --tags=http-server,https-server --disk=name=am-scraper-11,device-name=am-scraper-11,mode=rw,boot=yes,auto-delete=yes --reservation-affinity=any
 ```
+
+# check df_main.pickle
+
+```python
+import pickle
+import pandas as pd
+pd.set_option('display.max_colwidth', -1)
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
+def unpickle_object(file_name):
+    with open(file_name, 'rb') as f:
+        return pickle.load(f)
+
+df = unpickle_object('df_main.pickle')
+df[df.page_link == ''].alt_images
+
+```
