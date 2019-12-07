@@ -227,7 +227,7 @@ if __name__ == "__main__":
 
     # flg to fill empty information
     if args.update_flg == 'alt_images':
-        EXISTING_LINKS = list(df[df[args.update_flg] != '[]'].page_link)
+        EXISTING_LINKS = list(DF_MAIN[DF_MAIN[args.update_flg] != '[]'].page_link)
         for item_link in item_links:
             if item_link in EXISTING_LINKS:
                 pass
