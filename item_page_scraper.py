@@ -151,10 +151,11 @@ def update_df_main(page_link):
     # sleep until passing the reject check
     while STOP_SIG == 1:
         print(DRIVER.page_source)
-        sleep(60*40)
-        STOP_SIG = request_reject_check()
         file_name = datetime.datetime.now().isoformat()
         os.system('gsutil cp df_main.pickle gs://am-scraped/bk/{file_name}.pickle'.format(file_name=file_name))
+        sleep(60*40)
+        STOP_SIG = request_reject_check()
+        
     alt_image_list = str(get_images("altImages"))
     feature_image_list = str(get_images("twister_feature_div"))
     # get item info
