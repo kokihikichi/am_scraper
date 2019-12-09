@@ -152,7 +152,7 @@ def request_reject_check():
     return res
 
 
-def update_df_main(page_link):
+def update_df_main(page_link, outputfile_name):
     global DF_MAIN
     global DRIVER
     global STOP_SIG
@@ -199,8 +199,6 @@ def update_df_main(page_link):
     df_tmp['item_genre'] = item_genre
     DF_MAIN = DF_MAIN.append(df_tmp)
     pickle_object('/home/koki_hikichi/am_scraper/df_main.pickle', DF_MAIN)
-    outputfile_name = 'am-scraper-{instance_name}-df_main.pickle'.format(
-        instance_name=str(args.container_num))
     os.system(
         'gsutil cp /home/koki_hikichi/am_scraper/df_main.pickle gs://am-scraped/bk/{file_name}'.format(file_name=outputfile_name))
     print(outputfile_name + ' sent')
@@ -252,4 +250,6 @@ if __name__ == "__main__":
             if item_link in EXISTING_LINKS:
                 pass
             else:
-                update_df_main(item_link)
+                outputfile_name = 'am-scraper-{instance_name}-df_main.pickle'.format(
+                    instance_name=str(args.container_num))
+                update_df_main(item_link, outputfile_name)
