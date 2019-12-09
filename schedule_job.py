@@ -23,8 +23,8 @@ def restart_scrapers():
                    """.format(instance_name=instance_name)
         os.system(cmd)
 
-
-schedule.every(1).hours.do(restart_scrapers)
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+if __name__ == "__main__":
+    schedule.every(30).minites.do(restart_scrapers)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
