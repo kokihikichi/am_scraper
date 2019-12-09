@@ -235,6 +235,8 @@ if __name__ == "__main__":
     parser.add_argument('--update_flg')
     parser.add_argument('container_num')
     args = parser.parse_args()
+    outputfile_name = 'am-scraper-{instance_name}-df_main.pickle'.format(
+        instance_name=str(args.container_num))
 
     # flg to fill empty information
     if args.update_flg == 'alt_images':
@@ -250,6 +252,4 @@ if __name__ == "__main__":
             if item_link in EXISTING_LINKS:
                 pass
             else:
-                outputfile_name = 'am-scraper-{instance_name}-df_main.pickle'.format(
-                    instance_name=str(args.container_num))
                 update_df_main(item_link, outputfile_name)
