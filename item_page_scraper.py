@@ -129,6 +129,17 @@ def get_images(div_id):
                 pass
     except NoSuchElementException:
         pass
+    try:
+        DRIVER.find_element_by_id(div_id)
+    except NoSuchElementException:
+        td_elems = DRIVER.find_elements_by_tag_name('td')
+        for td_elem in td_elems:
+            if '有効なページではありません' in td_elem.text:
+                print('有効なページではありません')
+                img_list = 'non valid page'
+            if 'お客様のリクエストの処理中にエラーが発生しました。' in td_elem.text:
+                print('お客様のリクエストの処理中にエラーが発生しました。')
+                img_list = 'processing error'
     return img_list
 
 
