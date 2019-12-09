@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from time import sleep
 import time
 from selenium import webdriver
@@ -9,6 +11,7 @@ import datetime
 import pandas as pd
 import random
 import argparse
+
 
 def pickle_object(file_name, obj):
     with open(file_name, 'wb') as f:
@@ -115,13 +118,6 @@ def get_images(div_id):
         img_elems = img_elem_box.find_elements_by_tag_name("li")
         for img_elem in img_elems:
             try:
-<<<<<<< HEAD
-                img_link = img_elem.find_element_by_tag_name("img").get_attribute("src")
-                if 'https://images-na.ssl-images-amazon.com/images/G/09/HomeCustomProduct/360_icon' in img_link:
-                    pass
-                else:
-                    img_list.append(img_elem.find_element_by_tag_name("img").get_attribute("src"))
-=======
                 img_link = img_elem.find_element_by_tag_name(
                     "img").get_attribute("src")
                 if 'https://images-na.ssl-images-amazon.com/images/G/09/HomeCustomProduct/360_icon' in img_link:
@@ -129,12 +125,12 @@ def get_images(div_id):
                 else:
                     img_list.append(img_elem.find_element_by_tag_name(
                         "img").get_attribute("src"))
->>>>>>> minor modifications
             except NoSuchElementException:
                 pass
     except NoSuchElementException:
         pass
     return img_list
+
 
 def request_reject_check():
     global DRIVER
@@ -152,8 +148,9 @@ def request_reject_check():
                 print('お客様のリクエストの処理中にエラーが発生しました。')
                 res = 0
     if res == 1:
-        print('Rejected')        
+        print('Rejected')
     return res
+
 
 def update_df_main(page_link):
     global DF_MAIN
@@ -166,17 +163,18 @@ def update_df_main(page_link):
 
     # get images
     DRIVER.get(item_link)
-    sleep(random.randint(2,5))
+    sleep(random.randint(2, 5))
     STOP_SIG = request_reject_check()
 
     # sleep until passing the reject check
     while STOP_SIG == 1:
         print(DRIVER.page_source)
         file_name = datetime.datetime.now().isoformat()
-        os.system('gsutil cp df_main.pickle gs://am-scraped/bk/{file_name}.pickle'.format(file_name=file_name))
+        os.system(
+            'gsutil cp df_main.pickle gs://am-scraped/bk/{file_name}.pickle'.format(file_name=file_name))
         sleep(60*40)
         STOP_SIG = request_reject_check()
-        
+
     alt_image_list = str(get_images("altImages"))
     feature_image_list = str(get_images("twister_feature_div"))
     # get item info
@@ -204,7 +202,7 @@ def update_df_main(page_link):
     df_tmp['item_genre'] = item_genre
     DF_MAIN = DF_MAIN.append(df_tmp)
     pickle_object('df_main.pickle', DF_MAIN)
-    
+
 
 try:
     DF_MAIN = unpickle_object('df_main.pickle')
@@ -230,14 +228,15 @@ if __name__ == "__main__":
     global DRIVER
 
     item_links = unpickle_object('item_links.pickle')
-    
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--update_flg')
     args = parser.parse_args()
 
     # flg to fill empty information
     if args.update_flg == 'alt_images':
-        EXISTING_LINKS = list(DF_MAIN[DF_MAIN[args.update_flg] != '[]'].page_link)
+        EXISTING_LINKS = list(
+            DF_MAIN[DF_MAIN[args.update_flg] != '[]'].page_link)
         for item_link in item_links:
             if item_link in EXISTING_LINKS:
                 pass
@@ -249,4 +248,3 @@ if __name__ == "__main__":
                 pass
             else:
                 update_df_main(item_link)
-    
