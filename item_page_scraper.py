@@ -171,7 +171,7 @@ def update_df_main(page_link):
         print(DRIVER.page_source)
         file_name = datetime.datetime.now().isoformat()
         os.system(
-            'gsutil cp df_main.pickle gs://am-scraped/bk/{file_name}.pickle'.format(file_name=file_name))
+            'gsutil cp /home/koki_hikichi/am_scraper/df_main.pickle gs://am-scraped/bk/{file_name}.pickle'.format(file_name=file_name))
         sleep(60*40)
         STOP_SIG = request_reject_check()
 
@@ -201,11 +201,11 @@ def update_df_main(page_link):
     df_tmp['item_text'] = item_text
     df_tmp['item_genre'] = item_genre
     DF_MAIN = DF_MAIN.append(df_tmp)
-    pickle_object('df_main.pickle', DF_MAIN)
+    pickle_object('/home/koki_hikichi/am_scraper/df_main.pickle', DF_MAIN)
 
 
 try:
-    DF_MAIN = unpickle_object('df_main.pickle')
+    DF_MAIN = unpickle_object('/home/koki_hikichi/am_scraper/df_main.pickle')
     EXISTING_LINKS = list(DF_MAIN.page_link)
 except FileNotFoundError:
     print('file not found')
@@ -220,14 +220,16 @@ pd.set_option('display.width', 1000)
 STOP_SIG = 0
 OPTIONS = Options()
 OPTIONS.add_argument('--headless')
-DRIVER = webdriver.Chrome(options=OPTIONS, executable_path='./chromedriver')
+DRIVER = webdriver.Chrome(
+    options=OPTIONS, executable_path='/home/koki_hikichi/am_scraper/chromedriver')
 
 if __name__ == "__main__":
     global EXISTING_LINKS
     global STOP_SIG
     global DRIVER
 
-    item_links = unpickle_object('item_links.pickle')
+    item_links = unpickle_object(
+        '/home/koki_hikichi/am_scraper/item_links.pickle')
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--update_flg')
