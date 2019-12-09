@@ -169,9 +169,6 @@ def update_df_main(page_link):
     # sleep until passing the reject check
     while STOP_SIG == 1:
         print(DRIVER.page_source)
-        file_name = datetime.datetime.now().isoformat()
-        os.system(
-            'gsutil cp /home/koki_hikichi/am_scraper/df_main.pickle gs://am-scraped/bk/{file_name}.pickle'.format(file_name=file_name))
         sleep(60*40)
         STOP_SIG = request_reject_check()
 
@@ -233,6 +230,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--update_flg')
+    parser.add_argument('container_num')
     args = parser.parse_args()
 
     # flg to fill empty information
@@ -250,3 +248,7 @@ if __name__ == "__main__":
                 pass
             else:
                 update_df_main(item_link)
+                outputfile_name = 'am-scraper-{instance_name}-df_main.pickle'.format(
+                    instance_name=str(args.container_num))
+                os.system(
+                    'gsutil cp /home/koki_hikichi/am_scraper/df_main.pickle gs://am-scraped/bk/{file_name}'.format(file_name=outputfile_name))
