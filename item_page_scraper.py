@@ -199,6 +199,11 @@ def update_df_main(page_link):
     df_tmp['item_genre'] = item_genre
     DF_MAIN = DF_MAIN.append(df_tmp)
     pickle_object('/home/koki_hikichi/am_scraper/df_main.pickle', DF_MAIN)
+    outputfile_name = 'am-scraper-{instance_name}-df_main.pickle'.format(
+        instance_name=str(args.container_num))
+    os.system(
+        'gsutil cp /home/koki_hikichi/am_scraper/df_main.pickle gs://am-scraped/bk/{file_name}'.format(file_name=outputfile_name))
+    print(outputfile_name + ' sent')
 
 
 try:
@@ -248,7 +253,3 @@ if __name__ == "__main__":
                 pass
             else:
                 update_df_main(item_link)
-                outputfile_name = 'am-scraper-{instance_name}-df_main.pickle'.format(
-                    instance_name=str(args.container_num))
-                os.system(
-                    'gsutil cp /home/koki_hikichi/am_scraper/df_main.pickle gs://am-scraped/bk/{file_name}'.format(file_name=outputfile_name))
