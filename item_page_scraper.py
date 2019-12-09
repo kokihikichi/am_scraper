@@ -152,7 +152,7 @@ def request_reject_check():
     return res
 
 
-def update_df_main(page_link, outputfile_name):
+def update_df_main(page_link):
     global DF_MAIN
     global DRIVER
     global STOP_SIG
@@ -198,10 +198,6 @@ def update_df_main(page_link, outputfile_name):
     df_tmp['item_text'] = item_text
     df_tmp['item_genre'] = item_genre
     DF_MAIN = DF_MAIN.append(df_tmp)
-    pickle_object('/home/koki_hikichi/am_scraper/df_main.pickle', DF_MAIN)
-    os.system(
-        'gsutil cp /home/koki_hikichi/am_scraper/df_main.pickle gs://am-scraped/bk/{file_name}'.format(file_name=outputfile_name))
-    print(outputfile_name + ' sent')
 
 
 try:
@@ -233,10 +229,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--update_flg')
-    parser.add_argument('container_num')
     args = parser.parse_args()
-    outputfile_name = 'am-scraper-{instance_name}-df_main.pickle'.format(
-        instance_name=str(args.container_num))
 
     # flg to fill empty information
     if args.update_flg == 'alt_images':
@@ -246,10 +239,10 @@ if __name__ == "__main__":
             if item_link in EXISTING_LINKS:
                 pass
             else:
-                update_df_main(item_link, outputfile_name)
+                update_df_main(item_link)
     else:
         for item_link in item_links:
             if item_link in EXISTING_LINKS:
                 pass
             else:
-                update_df_main(item_link, outputfile_name)
+                update_df_main(item_link)

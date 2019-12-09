@@ -60,16 +60,6 @@ def collect_item_pages(driver, current_url, container_num):
         pickle_object(
             '/home/koki_hikichi/am_scraper/current_url.pickle', current_url)
 
-        output_item_links = 'am-scraper-{instance_name}-item_links.pickle'.format(
-            instance_name=str(args.container_num))
-        output_current_url = 'am-scraper-{instance_name}-current_url.pickle'.format(
-            instance_name=str(args.container_num))
-
-        os.system(
-            'gsutil cp /home/koki_hikichi/am_scraper/{output_item_links} gs://am-scraped/bk/{file_name}'.format(file_name=outputfile_name))
-        os.system(
-            'gsutil cp /home/koki_hikichi/am_scraper/df_main.pickle gs://am-scraped/bk/{file_name}'.format(file_name=outputfile_name))
-
 
 if __name__ == "__main__":
     pd.set_option('display.max_rows', 500)
