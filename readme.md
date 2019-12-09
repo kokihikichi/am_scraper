@@ -29,14 +29,19 @@ echo 'eval "$(pyenv init -)"' >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
-# install python 3.5.0
+# python install
 
 ```
-pyenv install 3.5.0
-pyenv global 3.5.0
-pip install --upgrade pip
-pip install selenium
-pip install pandas
+
+wget https://www.python.org/ftp/python/3.5.0/Python-3.5.0.tgz
+tar xzf Python-3.5.0.tgz
+cd Python-3.5.0
+./configure
+make
+sudo make altinstall
+sudo /usr/local/bin/pip3.5 install --upgrade pip
+sudo /usr/local/bin/pip3.5 install selenium
+sudo /usr/local/bin/pip3.5 install pandas
 ```
 
 # use item_page_collector
@@ -47,28 +52,49 @@ cd am_scraper
 python item_page_collector.py --url
 ```
 
-# crate vm instances
+# remove & create vm instances
 
 ```
-gcloud compute --project "window-shopping-app" disks create "am-scraper-11" --size "10" --zone "us-central1-a" --source-snapshot "am-scraper-snapshot" --type "pd-standard"
+gcloud compute instances -q delete "am-scraper-1" --zone=us-central1-a
 
-gcloud beta compute --project=window-shopping-app instances create am-scraper-11 --zone=us-central1-a --machine-type=f1-micro --subnet=default --network-tier=PREMIUM --maintenance-policy=MIGRATE --service-account=9654041822-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform --tags=http-server,https-server --disk=name=am-scraper-11,device-name=am-scraper-11,mode=rw,boot=yes,auto-delete=yes --reservation-affinity=any
+gcloud compute --project "window-shopping-app" disks create "am-scraper-1" --size "10" --zone "us-central1-a" --source-snapshot "am-scraper-snapshot-1" --type "pd-standard"
+
+gcloud beta compute --project=window-shopping-app instances create am-scraper-1 --zone=us-central1-a --machine-type=n1-standard-1 --subnet=default --network-tier=PREMIUM --maintenance-policy=MIGRATE --service-account=9654041822-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform --tags=http-server,https-server --disk=name=am-scraper-1,device-name=am-scraper-1,mode=rw,boot=yes,auto-delete=yes --reservation-affinity=any
 ```
 
-# check df_main.pickle
+# set systemd
 
-```python
-import pickle
-import pandas as pd
-pd.set_option('display.max_colwidth', -1)
-pd.set_option('display.max_rows', 500)
-pd.set_option('display.max_columns', 500)
-pd.set_option('display.width', 1000)
-def unpickle_object(file_name):
-    with open(file_name, 'rb') as f:
-        return pickle.load(f)
+```
+sudo cp ./start_scrape_2.sh /usr/bin/start_scrape_2.sh
+sudo chmod +x /usr/bin/start_scrape_2.sh
+sudo cp myservice.service /etc/systemd/system/myservice.service
+sudo chmod 644 /etc/systemd/system/myservice.service
+```
 
-df = unpickle_object('df_main.pickle')
-df[df.page_link == ''].alt_images
+# sudo vi /usr/bin/start_scrape_2.sh
+
+```
+cd /home/koki_hikichi/am_scraper
+/usr/bin/python3.5 /home/koki_hikichi/am_scraper/item_page_scraper.py --update_flg alt_images
+```
+
+# startup_script
+
+```
+gsutil cp gs://am-scraped/startup_scripts/am-scraper-6.sh /home/koki_hikichi/am_scraper/
+sudo chmod +x /home/koki_hikichi/am_scraper/am-scraper-6.sh
+/home/koki_hikichi/am_scraper/am-scraper-6.sh
+```
+
+# am-scraper-X.sh
+
+```
+cd /home/koki_hikichi/am_scraper
+rm df_main.pickle item_links.pickle current_url.pickle
+gsutil cp gs://am-scraped/bk/am-scraper-6-df_main.pickle /home/koki_hikichi/am_scraper/df_main.pickle
+gsutil cp gs://am-scraped/bk/am-scraper-6-item_links.pickle /home/koki_hikichi/am_scraper/item_links.pickle
+gsutil cp gs://am-scraped/bk/am-scraper-6-current_url.pickle /home/koki_hikichi/am_scraper/current_url.pickle
+git pull --rebase
+python item_page_scraper.py 6 --update_flg alt_images
 
 ```
