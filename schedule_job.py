@@ -24,7 +24,7 @@ def restart_scrapers():
         os.system(cmd)
 
 if __name__ == "__main__":
-    schedule.every(30).minites.do(restart_scrapers)
+    schedule.every(30).minutes.do(restart_scrapers)
     while True:
         schedule.run_pending()
         time.sleep(1)
