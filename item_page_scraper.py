@@ -244,7 +244,7 @@ if __name__ == "__main__":
             if item_link in EXISTING_LINKS:
                 pass
             else:
-                update_df_main(item_link)
+                update_df_main(item_link, outputfile_name)
     else:
         for item_link in item_links:
             if item_link in EXISTING_LINKS:
