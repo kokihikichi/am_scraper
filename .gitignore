@@ -4,3 +4,6 @@ current_url.pickle
 .vscode/
 df_main.pickle
 data/*
+.ipynb_checkpoints/
+*.pickle
+item_master.csv

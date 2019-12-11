@@ -7,7 +7,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 import pickle
 import os
-import datetime
 import pandas as pd
 import random
 import argparse

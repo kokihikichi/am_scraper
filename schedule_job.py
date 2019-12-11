@@ -1,5 +1,4 @@
 import schedule
-import time
 import os
 
 
@@ -29,4 +28,3 @@ if __name__ == "__main__":
     schedule.every(30).minutes.do(restart_scrapers)
     while True:
         schedule.run_pending()
-        time.sleep(1)
