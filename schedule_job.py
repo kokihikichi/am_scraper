@@ -8,6 +8,7 @@ def restart_scrapers():
         instance_name = 'am-scraper-{i}'.format(i=i)
         os.system("gcloud compute ssh -q {instance_name} --zone us-central1-a \
                   --command 'source ~/.bash_profile && \
+                             rm -rf /tmp/ && \
                              gsutil cp /home/koki_hikichi/am_scraper/df_main.pickle gs://am-scraped/bk/{instance_name}-df_main.pickle &&\
                              gsutil cp /home/koki_hikichi/am_scraper/item_links.pickle gs://am-scraped/bk/{instance_name}-item_links.pickle &&\
                              gsutil cp /home/koki_hikichi/am_scraper/current_url.pickle gs://am-scraped/bk/{instance_name}-current_url.pickle'".format(instance_name=instance_name))
@@ -22,6 +23,7 @@ def restart_scrapers():
                    tmux new-session -d -s scrape '/home/koki_hikichi/am_scraper/{instance_name}.sh'"
                    """.format(instance_name=instance_name)
         os.system(cmd)
+
 
 if __name__ == "__main__":
     schedule.every(30).minutes.do(restart_scrapers)
