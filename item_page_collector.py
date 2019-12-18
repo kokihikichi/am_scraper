@@ -23,9 +23,9 @@ def collect_item_pages(driver, current_url, container_num):
     while current_url != prev_url:
         try:
             item_links = unpickle_object(
-                '/home/koki_hikichi/am_scraper/item_links.pickle')
+                '/home/kokihikichi/am_scraper/item_links.pickle')
             current_url = unpickle_object(
-                '/home/koki_hikichi/am_scraper/current_url.pickle')
+                '/home/kokihikichi/am_scraper/current_url.pickle')
         except FileNotFoundError:
             print('file not found')
         print('current_url:{}'.format(current_url))
@@ -55,9 +55,9 @@ def collect_item_pages(driver, current_url, container_num):
         current_url = driver.current_url
         prev_url = tmp_url
         pickle_object(
-            '/home/koki_hikichi/am_scraper/item_links.pickle', item_links)
+            '/home/kokihikichi/am_scraper/item_links.pickle', item_links)
         pickle_object(
-            '/home/koki_hikichi/am_scraper/current_url.pickle', current_url)
+            '/home/kokihikichi/am_scraper/current_url.pickle', current_url)
 
 
 if __name__ == "__main__":

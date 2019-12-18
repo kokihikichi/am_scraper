@@ -211,7 +211,7 @@ def update_df_main(page_link):
 
 
 try:
-    DF_MAIN = unpickle_object('/home/koki_hikichi/am_scraper/df_main.pickle')
+    DF_MAIN = unpickle_object('/home/kokihikichi/am_scraper/df_main.pickle')
     EXISTING_LINKS = list(DF_MAIN.page_link)
 except FileNotFoundError:
     print('file not found')
@@ -227,7 +227,7 @@ STOP_SIG = 0
 OPTIONS = Options()
 OPTIONS.add_argument('--headless')
 DRIVER = webdriver.Chrome(
-    options=OPTIONS, executable_path='/home/koki_hikichi/am_scraper/chromedriver')
+    options=OPTIONS, executable_path='/home/kokihikichi/am_scraper/chromedriver')
 
 if __name__ == "__main__":
     global EXISTING_LINKS
@@ -235,7 +235,7 @@ if __name__ == "__main__":
     global DRIVER
 
     item_links = unpickle_object(
-        '/home/koki_hikichi/am_scraper/item_links.pickle')
+        '/home/kokihikichi/am_scraper/item_links.pickle')
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--update_flg')

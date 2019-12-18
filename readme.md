@@ -20,6 +20,24 @@ unzip chromedriver_linux64.zip
 cp chromedriver ./am_scraper/
 ```
 
+# firefox & firefox driver
+
+```
+yum install -y firefox
+wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz
+
+
+yum -y install http://linuxdownload.adobe.com/linux/x86_64/adobe-release-x86_64-1.0-1.noarch.rpm
+yum install flash-plugin
+yum groupinstall "X Window System" "Desktop" "Fonts"
+
+
+cp geckodriver ./am_scraper/
+export PATH=$PATH:/home/koki_hikichi/am_scraper/geckodriver
+
+
+```
+
 # pyenv
 
 ```
