@@ -11,6 +11,27 @@ import pandas as pd
 import random
 import argparse
 
+os.system('gsutil cp gs://am-scraped/data/remove_item_links.pickle /home/kokihikichi/am_scraper/remove_item_links.pickle')
+REMOVE_LINKS = unpickle_object('/home/kokihikichi/am_scraper/remove_item_links.pickle')
+
+try:
+    DF_MAIN = unpickle_object('/home/kokihikichi/am_scraper/pickle_object.pickle')
+    EXISTING_LINKS = list(DF_MAIN.page_link) + REMOVE_LINKS
+except FileNotFoundError:
+    print('file not found')
+    DF_MAIN = pd.DataFrame()
+    EXISTING_LINKS = REMOVE_LINKS
+
+pd.set_option('display.max_colwidth', -1)
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
+
+STOP_SIG = 0
+OPTIONS = Options()
+OPTIONS.add_argument('--headless')
+DRIVER = webdriver.Chrome(
+    options=OPTIONS, executable_path='/home/kokihikichi/am_scraper/chromedriver')
 
 def pickle_object(file_name, obj):
     with open(file_name, 'wb') as f:
@@ -134,10 +155,10 @@ def get_images(div_id):
         td_elems = DRIVER.find_elements_by_tag_name('td')
         for td_elem in td_elems:
             if '有効なページではありません' in td_elem.text:
-                print('有効なページではありません')
+                print('not a valid page')
                 img_list = 'non valid page'
             if 'お客様のリクエストの処理中にエラーが発生しました。' in td_elem.text:
-                print('お客様のリクエストの処理中にエラーが発生しました。')
+                print('error during processing request')
                 img_list = 'processing error'
     return img_list
 
@@ -208,29 +229,8 @@ def update_df_main(page_link):
     df_tmp['item_text'] = item_text
     df_tmp['item_genre'] = item_genre
     DF_MAIN = DF_MAIN.append(df_tmp)
+    pickle_object('df_main.pickle', DF_MAIN)
 
-
-os.system('gsutil cp gs://am-scraped/data/remove_item_links.pickle /home/kokihikichi/am_scraper/remove_item_links.pickle')
-REMOVE_LINKS = unpickle_object('/home/kokihikichi/am_scraper/remove_item_links.pickle')
-
-try:
-    DF_MAIN = unpickle_object('/home/kokihikichi/am_scraper/pickle_object.pickle')
-    EXISTING_LINKS = list(DF_MAIN.page_link) + REMOVE_LINKS
-except FileNotFoundError:
-    print('file not found')
-    DF_MAIN = pd.DataFrame()
-    EXISTING_LINKS = REMOVE_LINKS
-
-pd.set_option('display.max_colwidth', -1)
-pd.set_option('display.max_rows', 500)
-pd.set_option('display.max_columns', 500)
-pd.set_option('display.width', 1000)
-
-STOP_SIG = 0
-OPTIONS = Options()
-OPTIONS.add_argument('--headless')
-DRIVER = webdriver.Chrome(
-    options=OPTIONS, executable_path='/home/kokihikichi/am_scraper/chromedriver')
 
 if __name__ == "__main__":
     global EXISTING_LINKS
