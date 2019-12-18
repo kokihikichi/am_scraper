@@ -11,6 +11,15 @@ import pandas as pd
 import random
 import argparse
 
+def pickle_object(file_name, obj):
+    with open(file_name, 'wb') as f:
+        pickle.dump(obj, f)
+
+
+def unpickle_object(file_name):
+    with open(file_name, 'rb') as f:
+        return pickle.load(f)
+
 os.system('gsutil cp gs://am-scraped/data/remove_item_links.pickle /home/kokihikichi/am_scraper/remove_item_links.pickle')
 REMOVE_LINKS = unpickle_object('/home/kokihikichi/am_scraper/remove_item_links.pickle')
 
@@ -33,14 +42,6 @@ OPTIONS.add_argument('--headless')
 DRIVER = webdriver.Chrome(
     options=OPTIONS, executable_path='/home/kokihikichi/am_scraper/chromedriver')
 
-def pickle_object(file_name, obj):
-    with open(file_name, 'wb') as f:
-        pickle.dump(obj, f)
-
-
-def unpickle_object(file_name):
-    with open(file_name, 'rb') as f:
-        return pickle.load(f)
 
 
 def get_item_genre():
