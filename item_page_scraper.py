@@ -210,15 +210,16 @@ def update_df_main(page_link):
     DF_MAIN = DF_MAIN.append(df_tmp)
 
 
+os.system('gsutil cp gs://am-scraped/remove_item_links.pickle /home/kokihikichi/am_scraper/remove_item_links.pickle')
+REMOVE_LINKS = unpickle_object('/home/kokihikichi/am_scraper/remove_item_links.pickle')
+
 try:
-    os.system('gsutil cp gs://am-scraped/remove_item_links.pickle /home/kokihikichi/am_scraper/remove_item_links.pickle')
-    REMOVE_LINKS = unpickle_object('/home/kokihikichi/am_scraper/remove_item_links.pickle')
     DF_MAIN = unpickle_object('/home/kokihikichi/am_scraper/pickle_object.pickle')
     EXISTING_LINKS = list(DF_MAIN.page_link) + REMOVE_LINKS
 except FileNotFoundError:
     print('file not found')
     DF_MAIN = pd.DataFrame()
-    EXISTING_LINKS = []
+    EXISTING_LINKS = REMOVE_LINKS
 
 pd.set_option('display.max_colwidth', -1)
 pd.set_option('display.max_rows', 500)
