@@ -249,13 +249,13 @@ if __name__ == "__main__":
     if args.update_flg == 'alt_images':
         EXISTING_LINKS = list(
             DF_MAIN[DF_MAIN[args.update_flg] != '[]'].page_link)
-        for item_link in item_links[args.slice_start:]:
+        for item_link in item_links[int(args.slice_start):]:
             if item_link in EXISTING_LINKS:
                 pass
             else:
                 update_df_main(item_link)
     else:
-        for item_link in item_links[args.slice_start:]:
+        for item_link in item_links[int(args.slice_start):]:
             if item_link in EXISTING_LINKS:
                 pass
             else:
