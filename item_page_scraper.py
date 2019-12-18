@@ -211,8 +211,10 @@ def update_df_main(page_link):
 
 
 try:
-    DF_MAIN = unpickle_object('/home/kokihikichi/am_scraper/df_main.pickle')
-    EXISTING_LINKS = list(DF_MAIN.page_link)
+    os.system('gsutil cp gs://am-scraped/remove_item_links.pickle /home/kokihikichi/am_scraper/remove_item_links.pickle')
+    REMOVE_LINKS = unpickle_object('/home/kokihikichi/am_scraper/remove_item_links.pickle')
+    DF_MAIN = unpickle_object('/home/kokihikichi/am_scraper/pickle_object.pickle')
+    EXISTING_LINKS = list(DF_MAIN.page_link) + REMOVE_LINKS
 except FileNotFoundError:
     print('file not found')
     DF_MAIN = pd.DataFrame()
@@ -239,19 +241,20 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--update_flg')
+    parser.add_argument('--slice_start')
     args = parser.parse_args()
 
     # flg to fill empty information
     if args.update_flg == 'alt_images':
         EXISTING_LINKS = list(
             DF_MAIN[DF_MAIN[args.update_flg] != '[]'].page_link)
-        for item_link in item_links:
+        for item_link in item_links[args.slice_start:]:
             if item_link in EXISTING_LINKS:
                 pass
             else:
                 update_df_main(item_link)
     else:
-        for item_link in item_links:
+        for item_link in item_links[args.slice_start:]:
             if item_link in EXISTING_LINKS:
                 pass
             else:
