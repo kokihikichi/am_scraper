@@ -210,7 +210,7 @@ def update_df_main(page_link):
     DF_MAIN = DF_MAIN.append(df_tmp)
 
 
-os.system('gsutil cp gs://am-scraped/remove_item_links.pickle /home/kokihikichi/am_scraper/remove_item_links.pickle')
+os.system('gsutil cp gs://am-scraped/data/remove_item_links.pickle /home/kokihikichi/am_scraper/remove_item_links.pickle')
 REMOVE_LINKS = unpickle_object('/home/kokihikichi/am_scraper/remove_item_links.pickle')
 
 try:
