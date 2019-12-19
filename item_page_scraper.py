@@ -200,7 +200,7 @@ def update_df_main(page_link):
 
     # sleep until passing the reject check
     while STOP_SIG == 1:
-        print(DRIVER.page_source)
+        print('request denied')
         sleep(60*40)
         STOP_SIG = request_reject_check()
 
