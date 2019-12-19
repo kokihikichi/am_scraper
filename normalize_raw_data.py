@@ -46,14 +46,17 @@ def extract_info(row, target_info):
 
 def trim_image_param(row):
     res = []
-    image_list = string_to_list(row)
-    for image in image_list:
-        file_extension = re.search(r'[a-zA-Z]+$', image).group()
-        path = re.sub('\_.*', '', image)
-        image_path = path + file_extension
-        if image_path not in ['https://images-na.ssl-images-amazon.com/images/G/01/x-locale/common/transparent-pixel.gif','https://m.media-amazon.com/images/G/09/HomeCustomProduct/360png']:
-            res.append(image_path)
-    return res
+    if ('non valid' in row) or ('processing error' in row):
+        return 'N/A'
+    else:
+        image_list = string_to_list(row)
+        for image in image_list:
+            file_extension = re.search(r'[a-zA-Z]+$', image).group()
+            path = re.sub('\_.*', '', image)
+            image_path = path + file_extension
+            if image_path not in ['https://images-na.ssl-images-amazon.com/images/G/01/x-locale/common/transparent-pixel.gif','https://m.media-amazon.com/images/G/09/HomeCustomProduct/360png']:
+                res.append(image_path)
+        return res
 
 
 def unpickle_object(file_name):
