@@ -24,7 +24,7 @@ os.system('gsutil cp gs://am-scraped/data/remove_item_links.pickle /home/kokihik
 REMOVE_LINKS = unpickle_object('/home/kokihikichi/am_scraper/remove_item_links.pickle')
 
 try:
-    DF_MAIN = unpickle_object('/home/kokihikichi/am_scraper/pickle_object.pickle')
+    DF_MAIN = unpickle_object('/home/kokihikichi/am_scraper/df_main.pickle')
     EXISTING_LINKS = list(DF_MAIN.page_link) + REMOVE_LINKS
 except FileNotFoundError:
     print('file not found')
