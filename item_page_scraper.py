@@ -20,6 +20,7 @@ def unpickle_object(file_name):
     with open(file_name, 'rb') as f:
         return pickle.load(f)
 
+print("SET REMOVE ITEM")
 os.system('gsutil cp gs://am-scraped/data/remove_item_links.pickle /home/kokihikichi/am_scraper/remove_item_links.pickle')
 REMOVE_LINKS = unpickle_object('/home/kokihikichi/am_scraper/remove_item_links.pickle')
 
@@ -27,7 +28,7 @@ try:
     DF_MAIN = unpickle_object('/home/kokihikichi/am_scraper/df_main.pickle')
     EXISTING_LINKS = list(DF_MAIN.page_link) + REMOVE_LINKS
 except FileNotFoundError:
-    print('file not found')
+    print('EXISTING DF NOT FOUND')
     DF_MAIN = pd.DataFrame()
     EXISTING_LINKS = REMOVE_LINKS
 
