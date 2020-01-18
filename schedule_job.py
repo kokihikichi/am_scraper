@@ -7,7 +7,7 @@ def restart_scrapers():
         instance_name = 'am-scraper-{i}'.format(i=i)
         os.system("gcloud compute ssh -q {instance_name} --zone us-central1-a \
                     --command 'source ~/.bash_profile && \
-                                gsutil cp /home/kokihikichi/am_scraper/df_main.pickle gs://am-scraped/bk/{instance_name}-df_main.pickle &&\
+                                gsutil cp /home/kokihikichi/am_scraper/df_main.csv gs://am-scraped/bk/{instance_name}-df_main.csv &&\
                                 gsutil cp /home/kokihikichi/am_scraper/item_links.pickle gs://am-scraped/bk/{instance_name}-item_links.pickle'".format(instance_name=instance_name))
         os.system('gcloud compute instances stop {instance_name} --zone us-central1-a'.format(
             instance_name=instance_name))
